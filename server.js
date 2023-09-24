@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const exphbs = require('express-handlebars');
-const routes = require('./routes'); 
+const routes = require('./controllers');
 const Handlebars = require('handlebars');
 const moment = require('moment');
 
@@ -56,7 +56,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(routes);
-app.use('/api/blogs', require('./routes/api/blogPostRoutes'));
+app.use('/api/blogs', require('./controllers/api/blogPostRoutes'));
 
 
 sequelize.sync({ force: false}).then(() => {
