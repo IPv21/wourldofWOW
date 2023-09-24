@@ -1,0 +1,32 @@
+<h1>Welcome, {{user.name}}</h1>
+<h2>Your Blog Posts</h2>
+
+<!-- New Blog Post Form -->
+<form class="form new-post-form">
+	<input type="hidden" value="{{user_id}}" name="user_id" id="user_id" />
+	<div class="form-group">
+		<label for="title">Title</label>
+		<input class="form-input" type="text" id="title" name="title" />
+	</div>
+	<div class="form-group">
+		<label for="content">Content</label>
+		<textarea class="form-input" id="content" name="content"></textarea>
+	</div>
+	<div class="form-group">
+		<button class="btn btn-primary" type="submit">Create Post</button>
+	</div>
+</form>
+
+<!-- Existing Posts -->
+{{#each blogPosts}}
+	<div class="blog-post">
+		<h2>{{title}}</h2>
+		<p>{{content}}</p>
+		<p>Published on:
+			{{formatDate createdAt "MM/DD/YYYY"}}
+		</p>
+		<button data-id="{{id}}" class="delete-btn">Delete</button>
+	</div>
+{{/each}}
+
+<script src="/js/profile.js"></script>

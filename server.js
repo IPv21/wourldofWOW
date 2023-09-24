@@ -1,24 +1,64 @@
 const path = require('path');
 const express = require('express');
+const session = require('express-session');
 const exphbs = require('express-handlebars');
-const routes = require('./controllers');
-// const helpers = require('./utils/helpers');
-const sequelize = require("./config/connection");
+const routes = require('./routes'); 
+const Handlebars = require('handlebars');
+const moment = require('moment');
+
+Handlebars.registerHelper('formatDate', function(date, format) {
+  return moment(date).format(format);
+});
+
+
+const helpers = require('./utils/helpers');
+
+const sequelize = require('./config/connection');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const hbs = exphbs.create({ });
+// Set up Handlebars.js engine with custom helpers
+const hbs = exphbs.create({ helpers });
 
-app.engine('handlebars', hbs.engine);
+const sess = {
+  secret: 'secret',
+  cookie: {
+    maxAge: 300000,
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+  },
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize
+  })
+};
+
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }  
+}));
+
+// Inform Express.js on which template engine to use
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
+
+
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(routes);
+app.use('/api/blogs', require('./routes/api/blogPostRoutes'));
 
-sequelize.sync({ }).then(() => {
+
+sequelize.sync({ force: false}).then(() => {
   app.listen(PORT, () => console.log('Now listening'));
 });
