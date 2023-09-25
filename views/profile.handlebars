@@ -3,7 +3,6 @@
 
 <!-- New Blog Post Form -->
 <form class="form new-post-form">
-	<input type="hidden" value="{{user_id}}" name="user_id" id="user_id" />
 	<div class="form-group">
 		<label for="title">Title</label>
 		<input class="form-input" type="text" id="title" name="title" />
@@ -24,6 +23,9 @@
 		<p>{{content}}</p>
 		<p>Published on:
 			{{formatDate createdAt "MM/DD/YYYY"}}
+		</p>
+		<p>Published by:
+			{{user.name}}
 		</p>
 		<button data-id="{{id}}" class="delete-btn">Delete</button>
 	</div>
